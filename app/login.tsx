@@ -46,10 +46,11 @@ const styles = StyleSheet.create({
   },
   numberInput: {
     backgroundColor: "#ECD8C5",
-    width: "70px",
-    height: "70px",
+    width: 70,
+    height: 70,
     borderRadius: 15,
     marginHorizontal: 5,
+    textAlign: "center",
   },
   codeInfo: {
     fontWeight: "bold",
