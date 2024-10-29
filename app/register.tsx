@@ -1,24 +1,92 @@
-import { Image, StyleSheet, Text, TextInput, View } from "react-native";
+import ConfirmButton from "@/components/ConfirmButton";
+import Logo from "@/components/Logo";
+import { router } from "expo-router";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { useState } from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import { app } from "../firebaseConfig.js";
 
 const Register = () => {
+  const [email, setEmail] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [pin, setPin] = useState("");
+  const [error, setError] = useState("");
+
+  const handleRegisterUser = async () => {
+    const auth = getAuth(app);
+    const password = pin + "0000";
+    if (pin.length !== 4 || isNaN(pin)) {
+      setError("PIN must be a 4-digit number");
+      return;
+    }
+    try {
+      createUserWithEmailAndPassword(auth, email, password).then(
+        (userCredential) => {
+          const user = userCredential.user;
+          router.push("/final");
+        }
+      );
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleEmailChange = (text: string) => {
+    setEmail(text);
+  };
+
+  const handleNicknameChange = (text: string) => {
+    setNickname(text);
+  };
+
+  const handlePinChange = (text: string) => {
+    setPin(text);
+  };
+
   return (
     <View style={styles.container}>
-      <Image
-        resizeMode="contain"
-        source={require("../assets/images/splash.png")}
-        style={styles.logo}
-      />
+      <Logo />
       <View style={styles.form}>
         <Text>Nickname</Text>
-        <TextInput style={styles.formInput}></TextInput>
+        <TextInput
+          style={styles.formInput}
+          value={nickname}
+          onChangeText={handleNicknameChange}
+        />
         <Text>Email</Text>
-        <TextInput style={styles.formInput}></TextInput>
+        <TextInput
+          style={styles.formInput}
+          value={email}
+          onChangeText={handleEmailChange}
+        />
         <Text>Code</Text>
         <View style={styles.pinInput}>
-          <TextInput style={styles.numberInput}></TextInput>
-          <TextInput style={styles.numberInput}></TextInput>
-          <TextInput style={styles.numberInput}></TextInput>
-          <TextInput style={styles.numberInput}></TextInput>
+          <TextInput
+            style={styles.numberInput}
+            value={pin.substring(0, 1)}
+            onChangeText={(text) => handlePinChange(text + "")}
+          />
+          <TextInput
+            style={styles.numberInput}
+            value={pin.substring(1, 2)}
+            onChangeText={(text) =>
+              handlePinChange(pin.substring(0, 1) + text + "")
+            }
+          />
+          <TextInput
+            style={styles.numberInput}
+            value={pin.substring(2, 3)}
+            onChangeText={(text) =>
+              handlePinChange(pin.substring(0, 3) + text + "")
+            }
+          />
+          <TextInput
+            style={styles.numberInput}
+            value={pin.substring(3, 4)}
+            onChangeText={(text) =>
+              handlePinChange(pin.substring(0, 4) + text + "")
+            }
+          />
         </View>
         <Text style={styles.privacyInfo}>
           We are committed to providing you with a safe and supportive
@@ -28,9 +96,9 @@ const Register = () => {
           required by law. <br />
           <b>For your safety we won’t sent you any emails</b>
         </Text>
-      </View>{" "}
-      {/* Button */}
-      <Text style={styles.button}>Register </Text>
+      </View>
+
+      <ConfirmButton text="Register" onPress={handleRegisterUser} />
     </View>
   );
 };
@@ -43,11 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F1F0",
     fontFamily: "Manrope",
   },
-  logo: {
-    marginTop: 50,
-    width: 150,
-    height: 150,
-  },
+
   form: {
     paddingHorizontal: 20,
     flexDirection: "column",
@@ -55,7 +119,7 @@ const styles = StyleSheet.create({
 
   formInput: {
     backgroundColor: "#ECD8C5",
-    height: "40px",
+    height: 40,
     borderRadius: 10,
   },
   pinInput: {
@@ -63,8 +127,8 @@ const styles = StyleSheet.create({
   },
   numberInput: {
     backgroundColor: "#ECD8C5",
-    width: "70px",
-    height: "70px",
+    width: 70,
+    height: 70,
     borderRadius: 15,
     marginHorizontal: 5,
   },
@@ -72,16 +136,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginHorizontal: 20,
     marginTop: 10,
-  },
-  button: {
-    marginTop: 30,
-    padding: 15,
-    backgroundColor: "#382215",
-    color: "#F6F1F0",
-    fontSize: 16,
-    borderRadius: 50,
-    textAlign: "center",
-    width: "280px",
   },
 });
 

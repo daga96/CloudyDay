@@ -1,14 +1,12 @@
+import ConfirmButton from "@/components/ConfirmButton";
+import Logo from "@/components/Logo";
 import { Link } from "expo-router";
-import { Image, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
 const Login = () => {
   return (
     <View style={styles.container}>
-      <Image
-        resizeMode="contain"
-        source={require("../assets/images/splash.png")}
-        style={styles.logo}
-      />
+      <Logo />
       <Text style={styles.infoText}>Enter 4 - digit code to login </Text>
       <View style={styles.pinInput}>
         <TextInput style={styles.numberInput}></TextInput>
@@ -20,7 +18,7 @@ const Login = () => {
         Don’t have the code? <Link href="/register">Register Here</Link>
       </Text>
       {/* Button */}
-      <Text style={styles.button}>Continue </Text>
+      <ConfirmButton text="Confirm" />
     </View>
   );
 };
@@ -55,16 +53,6 @@ const styles = StyleSheet.create({
   },
   codeInfo: {
     fontWeight: "bold",
-  },
-  button: {
-    marginTop: 30,
-    padding: 15,
-    backgroundColor: "#382215",
-    color: "#F6F1F0",
-    fontSize: 16,
-    borderRadius: 50,
-    textAlign: "center",
-    width: "280px",
   },
 });
 

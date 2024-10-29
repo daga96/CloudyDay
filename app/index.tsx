@@ -1,5 +1,7 @@
 // app/Home.tsx
 
+import ConfirmButton from "@/components/ConfirmButton";
+import Logo from "@/components/Logo";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import * as Location from "expo-location";
@@ -42,12 +44,7 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      {/* Logo */}
-      <Image
-        resizeMode="contain"
-        source={require("../assets/images/splash.png")}
-        style={styles.logo}
-      />
+      <Logo />
 
       {/* Weather Info Container */}
       <View style={styles.weatherContainer}>
@@ -80,7 +77,7 @@ const Home = () => {
       </View>
 
       {/* Button */}
-      <Text style={styles.button}>Report Unusual Weather </Text>
+      <ConfirmButton text="Report Unusual Weather" />
     </View>
   );
 };
@@ -93,11 +90,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F1F0",
     fontFamily: "Manrope",
   },
-  logo: {
-    marginTop: 50,
-    width: 150,
-    height: 150,
-  },
+
   weatherContainer: {
     width: "90%",
     marginTop: 20,
@@ -134,16 +127,6 @@ const styles = StyleSheet.create({
   weatherIcon: {
     width: 50,
     height: 50,
-  },
-
-  button: {
-    marginTop: 30,
-    padding: 15,
-    backgroundColor: "#382215",
-    color: "#F6F1F0",
-    fontSize: 16,
-    borderRadius: 50,
-    textAlign: "center",
   },
 });
 
