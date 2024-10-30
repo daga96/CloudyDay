@@ -6,8 +6,7 @@ import { useStatus } from "@/contexts/StatusContext";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { router } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 const API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 
 const FastAssessment = () => {
@@ -42,7 +41,7 @@ const FastAssessment = () => {
 
   async function Gemini() {
     const query =
-      "Please asses danger situation of the domestic violence victing into one of four categories safe| caution | danger | immediate danger based on the existence of following tags. Start response with category followed by *" +
+      "Evaluate the level of danger described tags chosen by a domestic violence victim and categorize it as one of the following: Safe, Caution, Danger, or Immediate Danger. Begin the response with the appropriate category, followed by an asterisk (*). After the asterisk, kindly explain why the situation falls under that category, using empathetic language." +
       JSON.stringify(tags);
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-002" });
@@ -74,7 +73,7 @@ const FastAssessment = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Header text="Assess Danger" />
       <Text style={styles.description}>
         Choose tags that describe your situation
@@ -91,17 +90,15 @@ const FastAssessment = () => {
       </View>
       <ConfirmButton text="Continue" onPress={Gemini} />
       <ExitButton />
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  scrollContainer: {
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    backgroundColor: "#F6F1F0",
-    fontFamily: "Manrope",
   },
   description: {
     textAlign: "center",

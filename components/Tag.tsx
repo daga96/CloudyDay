@@ -13,11 +13,11 @@ const Tag = ({ text, isSelected = false, onPress }: TagProps) => {
       borderRadius: isSelected ? 100 : 100,
       color: isSelected ? "#FFFFFF" : "#382215",
       paddingHorizontal: 16,
-      paddingVertical: 8,
+      paddingVertical: 4,
       marginRight: 10,
       marginVertical: 5,
-      borderWidth: isSelected ? 5 : 0,
-      borderColor: "#DFE1CE",
+      borderWidth: 5,
+      borderColor: isSelected ? "#DFE1CE" : "transparent",
     },
   });
 

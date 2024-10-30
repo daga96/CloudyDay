@@ -18,7 +18,7 @@ const DetailedAssessmentScreen = () => {
 
   const assessDanger = async () => {
     const query =
-      "Please assess danger situation of the domestic violence victim based on their description of the situation into one of four categories safe| caution | danger | immediate danger. After category please put one *. Please add some sort of justification of the situation." +
+      "Evaluate the level of danger described by a domestic violence victim and categorize it as one of the following: Safe, Caution, Danger, or Immediate Danger. Begin the response with the appropriate category, followed by an asterisk (*). After the asterisk, kindly explain why the situation falls under that category, using empathetic language." +
       userInput;
 
     const genAI = new GoogleGenerativeAI(API_KEY);

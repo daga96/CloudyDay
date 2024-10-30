@@ -1,14 +1,14 @@
-import ConfirmButton from "@/components/ConfirmButton";
-import Logo from "@/components/Logo";
 import { router } from "expo-router";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import ConfirmButton from "../components/ConfirmButton";
+import Logo from "../components/Logo";
+import PinInput from "../components/PinInput";
 import { app } from "../firebaseConfig.js";
 
 const Register = () => {
   const [email, setEmail] = useState("");
-  const [nickname, setNickname] = useState("");
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
 
@@ -35,10 +35,6 @@ const Register = () => {
     setEmail(text);
   };
 
-  const handleNicknameChange = (text: string) => {
-    setNickname(text);
-  };
-
   const handlePinChange = (text: string) => {
     setPin(text);
   };
@@ -47,47 +43,14 @@ const Register = () => {
     <View style={styles.container}>
       <Logo />
       <View style={styles.form}>
-        <Text>Nickname</Text>
-        <TextInput
-          style={styles.formInput}
-          value={nickname}
-          onChangeText={handleNicknameChange}
-        />
-        <Text>Email</Text>
+        <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.formInput}
           value={email}
           onChangeText={handleEmailChange}
         />
-        <Text>Code</Text>
-        <View style={styles.pinInput}>
-          <TextInput
-            style={styles.numberInput}
-            value={pin.substring(0, 1)}
-            onChangeText={(text) => handlePinChange(text + "")}
-          />
-          <TextInput
-            style={styles.numberInput}
-            value={pin.substring(1, 2)}
-            onChangeText={(text) =>
-              handlePinChange(pin.substring(0, 1) + text + "")
-            }
-          />
-          <TextInput
-            style={styles.numberInput}
-            value={pin.substring(2, 3)}
-            onChangeText={(text) =>
-              handlePinChange(pin.substring(0, 3) + text + "")
-            }
-          />
-          <TextInput
-            style={styles.numberInput}
-            value={pin.substring(3, 4)}
-            onChangeText={(text) =>
-              handlePinChange(pin.substring(0, 4) + text + "")
-            }
-          />
-        </View>
+        <Text style={styles.label}>Code</Text>
+        <PinInput pin={pin} handlePinChange={handlePinChange} />
         <Text style={styles.privacyInfo}>
           We are committed to providing you with a safe and supportive
           environment. We understand that privacy is crucial, especially in
@@ -109,7 +72,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     backgroundColor: "#F6F1F0",
-    fontFamily: "Manrope",
   },
 
   form: {
@@ -117,25 +79,26 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
 
+  label: {
+    fontFamily: "Manrope_700Bold",
+    color: "#382215",
+    marginTop: 16,
+    marginBottom: 5,
+  },
   formInput: {
     backgroundColor: "#ECD8C5",
     height: 40,
     borderRadius: 10,
+    paddingLeft: 16,
   },
-  pinInput: {
-    flexDirection: "row",
-  },
-  numberInput: {
-    backgroundColor: "#ECD8C5",
-    width: 70,
-    height: 70,
-    borderRadius: 15,
-    marginHorizontal: 5,
-  },
+
   privacyInfo: {
     textAlign: "center",
     marginHorizontal: 20,
-    marginTop: 10,
+    marginVertical: 20,
+    fontFamily: "Manrope_400Regular",
+    fontSize: 12,
+    color: "#382215",
   },
 });
 

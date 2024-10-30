@@ -14,7 +14,6 @@ const ConfirmButton: React.FC<ConfirmButtonProps> = ({ text, onPress }) => {
 };
 const styles = StyleSheet.create({
   button: {
-    marginTop: 30,
     padding: 15,
     backgroundColor: "#382215",
     color: "#F6F1F0",

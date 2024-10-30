@@ -1,10 +1,27 @@
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { router, useSegments } from "expo-router";
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Logo from "./Logo";
 
 const Header = ({ text }: { text: string }) => {
+  const currentRoute = useSegments()[1];
+
   return (
     <View>
       <View style={styles.topHeader}>
+        <View style={styles.homeIcon}>
+          {currentRoute !== "main" && (
+            <TouchableOpacity onPress={() => router.push("/main")}>
+              <Image source={require("../assets/images/home.png")} />
+            </TouchableOpacity>
+          )}
+        </View>
         <Logo />
         <Text style={styles.text}>{text}</Text>
       </View>
@@ -22,6 +39,11 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     backgroundColor: "#ECD8C5",
     alignItems: "center",
+  },
+  homeIcon: {
+    width: "100%",
+    justifyContent: "flex-start",
+    padding: 8,
   },
   text: {
     fontSize: 24,

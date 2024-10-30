@@ -20,7 +20,7 @@ const MenuButton: React.FC<MenuButtonProps> = ({ text, onPress }) => {
           textColor: "#C38116",
           iconName: "safe.png",
         };
-      case "Resources":
+      case "Community":
         return {
           backgroundColor: "#A18FFD",
           textColor: "#413A65",
@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     fontWeight: "bold",
+    marginLeft: 32,
   },
 });
 export default MenuButton;
