@@ -14,10 +14,10 @@ import {
 import { app } from "../../firebaseConfig";
 
 const ThreadDetail = () => {
-  const { q } = useLocalSearchParams(); // Extract the thread ID from query parameters
-  const [thread, setThread] = useState(null);
-  const [newComment, setNewComment] = useState("");
+  const [thread, setThread] = useState<Object | null>(null);
+  const [newComment, setNewComment] = useState<string>("");
   const db = getFirestore(app);
+  const { q } = useLocalSearchParams();
 
   useEffect(() => {
     const fetchThread = async () => {

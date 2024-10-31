@@ -68,8 +68,8 @@ const steps = [
 ];
 
 const SafePlan = () => {
-  const [currentStep, setCurrentStep] = useState(-1);
-  const [currentPlan, setCurrentPlan] = useState(null);
+  const [currentStep, setCurrentStep] = useState<number>(-1);
+  const [currentPlan, setCurrentPlan] = useState<Object | null>(null);
 
   const [answers, setAnswers] = useState({});
   const lastStep = currentStep < steps.length - 1;

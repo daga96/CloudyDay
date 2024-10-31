@@ -1,4 +1,3 @@
-// app/_layout.tsx
 import { SessionProvider } from "@/contexts/AuthContext";
 import { StatusProvider } from "@/contexts/StatusContext";
 import {
@@ -14,12 +13,13 @@ import * as Location from "expo-location";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, View } from "react-native";
 
+// Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
-export default async function Layout() {
-  let [fontsLoaded, error] = useFonts({
+export default function Layout() {
+  const [fontsLoaded, error] = useFonts({
     Manrope_300Light,
     Manrope_400Regular,
     Manrope_500Medium,
@@ -27,18 +27,20 @@ export default async function Layout() {
     Manrope_700Bold,
     Manrope_800ExtraBold,
   });
-  const { status } = await Location.requestForegroundPermissionsAsync();
-  if (status !== "granted") {
-    alert("Permission to access location was denied");
-  }
+
   useEffect(() => {
-    if (fontsLoaded || error) {
-      SplashScreen.hideAsync();
-    }
+    const prepare = async () => {
+      await Location.requestForegroundPermissionsAsync();
+      if (fontsLoaded || error) {
+        await SplashScreen.hideAsync();
+      }
+    };
+    prepare();
   }, [fontsLoaded, error]);
 
   if (!fontsLoaded && !error) {
-    return null;
+    // Render an empty view until fonts load to avoid flickering
+    return <View style={{ flex: 1 }} />;
   }
 
   return (

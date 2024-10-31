@@ -8,8 +8,8 @@ import { Alert, StyleSheet, TextInput, View } from "react-native";
 import { app } from "../../firebaseConfig";
 
 const SubmitThread = () => {
-  const [threadTitle, setThreadTitle] = useState(""); // State for thread title
-  const [threadContent, setThreadContent] = useState(""); // State for thread content
+  const [threadTitle, setThreadTitle] = useState<string>(""); // State for thread title
+  const [threadContent, setThreadContent] = useState<string>(""); // State for thread content
 
   const addThread = async () => {
     if (!threadTitle || !threadContent) {

@@ -16,7 +16,7 @@ import {
 
 const AssessDanger = () => {
   const { session } = useSession();
-  const [assessments, setAssessments] = useState([]);
+  const [assessments, setAssessments] = useState<Array<any>>([]);
   const assessmentOptions = [
     {
       label: "Fast",
@@ -31,6 +31,10 @@ const AssessDanger = () => {
       color: "#413A65",
     },
   ];
+
+  useEffect(() => {
+    fetchAssessments();
+  }, []);
 
   const fetchAssessments = async () => {
     const db = getFirestore(app);
@@ -53,10 +57,6 @@ const AssessDanger = () => {
       console.error("Error fetching assessments: ", error);
     }
   };
-
-  useEffect(() => {
-    fetchAssessments();
-  }, []);
 
   const formatDate = (date) => {
     return date.split("T")[0];

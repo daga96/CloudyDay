@@ -8,9 +8,9 @@ import PinInput from "../components/PinInput";
 import { app } from "../firebaseConfig.js";
 
 const Register = () => {
-  const [email, setEmail] = useState("");
-  const [pin, setPin] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [pin, setPin] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const handleRegisterUser = async () => {
     const auth = getAuth(app);

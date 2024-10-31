@@ -7,13 +7,13 @@ import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [pin, setPin] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [pin, setPin] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const { signIn } = useSession();
 
-  const handleEmailChange = (text) => setEmail(text);
-  const handlePinChange = (text) => setPin(text);
+  const handleEmailChange = (text: string) => setEmail(text);
+  const handlePinChange = (text: string) => setPin(text);
 
   const handleLoginUser = async () => {
     const password = pin + "0000";
@@ -28,6 +28,7 @@ const Login = () => {
       setError(err.message);
     }
   };
+
   return (
     <View style={styles.container}>
       <Logo />
@@ -46,10 +47,12 @@ const Login = () => {
       <Text style={styles.codeInfo}>
         Don’t have the code? <Link href="/register">Register Here</Link>
       </Text>
+      <Text>{error}</Text>
       <ConfirmButton text="Confirm" onPress={handleLoginUser} />
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

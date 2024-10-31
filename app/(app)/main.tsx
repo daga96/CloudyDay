@@ -12,7 +12,7 @@ const Main = () => {
 
   return (
     <View style={styles.container}>
-      <Header text={`Hi! ${session.replace(/"/g, "")}`} />
+      <Header text={`Hi! ${session?.replace(/"/g, "")}`} />
 
       <View>
         <Text style={styles.title}>Take Action</Text>

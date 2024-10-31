@@ -9,7 +9,7 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 const API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 
 const DetailedAssessmentScreen = () => {
-  const [userInput, setUserInput] = useState("");
+  const [userInput, setUserInput] = useState<string>("");
   const { status, setStatusData } = useStatus();
 
   const handleUserInput = (text: string) => {

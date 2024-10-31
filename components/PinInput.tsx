@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 
 interface PinInputProps {
@@ -6,34 +7,40 @@ interface PinInputProps {
 }
 
 const PinInput: React.FC<PinInputProps> = ({ pin, handlePinChange }) => {
+  const inputRefs = [
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+  ];
+
+  const handleChange = (text: string, index: number) => {
+    // Update the pin
+    let newPin = pin.split("");
+    newPin[index] = text;
+    handlePinChange(newPin.join(""));
+
+    // Focus on the next input if it exists and text is entered
+    if (text && index < inputRefs.length - 1) {
+      inputRefs[index + 1].current?.focus();
+    }
+  };
+
   return (
     <View style={styles.pinInput}>
-      <TextInput
-        style={styles.numberInput}
-        value={pin.substring(0, 1)}
-        onChangeText={(text) => handlePinChange(text + "")}
-      />
-      <TextInput
-        style={styles.numberInput}
-        value={pin.substring(1, 2)}
-        onChangeText={(text) =>
-          handlePinChange(pin.substring(0, 1) + text + "")
-        }
-      />
-      <TextInput
-        style={styles.numberInput}
-        value={pin.substring(2, 3)}
-        onChangeText={(text) =>
-          handlePinChange(pin.substring(0, 3) + text + "")
-        }
-      />
-      <TextInput
-        style={styles.numberInput}
-        value={pin.substring(3, 4)}
-        onChangeText={(text) =>
-          handlePinChange(pin.substring(0, 4) + text + "")
-        }
-      />
+      {Array(4)
+        .fill(null)
+        .map((_, index) => (
+          <TextInput
+            key={index}
+            ref={inputRefs[index]}
+            style={styles.numberInput}
+            value={pin[index] || ""}
+            maxLength={1}
+            keyboardType="numeric"
+            onChangeText={(text) => handleChange(text, index)}
+          />
+        ))}
     </View>
   );
 };

@@ -14,7 +14,7 @@ import {
 import { app } from "../../firebaseConfig";
 
 const Community = () => {
-  const [threads, setThreads] = useState([]);
+  const [threads, setThreads] = useState<Array<any>>([]);
 
   useEffect(() => {
     const fetchThreads = async () => {
@@ -32,11 +32,11 @@ const Community = () => {
     fetchThreads();
   }, []);
 
-  const handleThreadPress = (threadId) => {
+  const handleThreadPress = (threadId: string) => {
     router.push(`/thread?q=${threadId}`);
   };
 
-  const timeSince = (dateString) => {
+  const timeSince = (dateString: Date) => {
     const now = Date.now();
     const postDate = new Date(dateString).getTime();
     const seconds = Math.floor((now - postDate) / 1000);
