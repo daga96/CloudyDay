@@ -15,7 +15,7 @@ const Register = () => {
   const handleRegisterUser = async () => {
     const auth = getAuth(app);
     const password = pin + "0000";
-    if (pin.length !== 4 || isNaN(pin)) {
+    if (pin.length !== 4) {
       setError("PIN must be a 4-digit number");
       return;
     }
@@ -57,7 +57,7 @@ const Register = () => {
           sensitive situations. Your information will be stored securely and
           will not be shared with third parties without your consent, except as
           required by law. <br />
-          <b>For your safety we won’t sent you any emails</b>
+          <b>For your safety we won’t sent you any emails.</b>
         </Text>
       </View>
 
