@@ -2,6 +2,7 @@ import ConfirmButton from "@/components/ConfirmButton";
 import Logo from "@/components/Logo";
 import PinInput from "@/components/PinInput";
 import { useSession } from "@/contexts/AuthContext";
+import GlobalStyles from "@/styles/globalStyles";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
@@ -21,16 +22,16 @@ const Login = () => {
       setError("PIN must be a 4-digit number");
       return;
     }
-    try {
-      await signIn(email, password);
+    const loginSuccess = await signIn(email, password);
+    if (loginSuccess) {
       router.push("/main");
-    } catch (err) {
-      setError(err.message);
+    } else {
+      setError("Failed to log in. Please check your credentials.");
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View style={GlobalStyles.container}>
       <Logo />
       <View style={styles.form}>
         <Text style={styles.label}>Email</Text>
@@ -47,20 +48,13 @@ const Login = () => {
       <Text style={styles.codeInfo}>
         Don’t have the code? <Link href="/register">Register Here</Link>
       </Text>
-      <Text>{error}</Text>
+      <Text style={GlobalStyles.errorText}>{error}</Text>
       <ConfirmButton text="Confirm" onPress={handleLoginUser} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "#F6F1F0",
-    fontFamily: "Manrope",
-  },
   logo: {
     marginTop: 50,
     width: 150,

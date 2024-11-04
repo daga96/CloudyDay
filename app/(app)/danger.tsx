@@ -2,6 +2,7 @@ import ExitButton from "@/components/ExitButton";
 import Header from "@/components/Header";
 import { useSession } from "@/contexts/AuthContext";
 import { app } from "@/firebaseConfig";
+import GlobalStyles from "@/styles/globalStyles";
 import { router } from "expo-router";
 import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -112,10 +113,10 @@ const AssessDanger = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={GlobalStyles.container}>
       <Header text="Assess Danger" />
       {assessments.length > 0 && (
-        <Text style={styles.title}>Previous Assesments</Text>
+        <Text style={styles.title}>Previous Assesment</Text>
       )}
       <AssessmentList />
       <Text style={styles.description}>
@@ -156,14 +157,6 @@ const AssessDanger = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "#F6F1F0",
-    fontFamily: "Manrope",
-  },
-
   description: {
     fontFamily: "Manrope_400Regular",
     textAlign: "center",

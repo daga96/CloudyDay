@@ -2,6 +2,7 @@ import ConfirmButton from "@/components/ConfirmButton";
 import Header from "@/components/Header";
 import Tag from "@/components/Tag";
 import { useSession } from "@/contexts/AuthContext";
+import GlobalStyles from "@/styles/globalStyles";
 import {
   collection,
   doc,
@@ -134,7 +135,7 @@ const SafePlan = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={GlobalStyles.container}>
       <Header text="Create Safe Plan" />
       {currentStep === -1 ? (
         <View style={styles.buttons}>
@@ -177,14 +178,6 @@ const SafePlan = () => {
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "#F6F1F0",
-    fontFamily: "Manrope",
-  },
-
   text: {
     textAlign: "left",
     marginHorizontal: 20,

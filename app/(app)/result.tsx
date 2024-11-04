@@ -2,10 +2,18 @@ import ExitButton from "@/components/ExitButton";
 import Logo from "@/components/Logo";
 import { useSession } from "@/contexts/AuthContext";
 import { useStatus } from "@/contexts/StatusContext";
+import GlobalStyles from "@/styles/globalStyles";
 import { router } from "expo-router";
 import { collection, doc, getFirestore, setDoc } from "firebase/firestore";
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
+import {
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { app } from "../../firebaseConfig";
+
 const StatusResult = () => {
   const { status } = useStatus();
   const session = useSession();
@@ -48,13 +56,14 @@ const StatusResult = () => {
         assessmentData
       );
       console.log("Assessment saved to Firebase with userEmail as document ID");
+      router.push("/danger");
     } catch (error) {
       console.error("Error saving assessment to Firebase:", error);
     }
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={GlobalStyles.container}>
       <ImageBackground source={getImageSource()} style={styles.top}>
         <Logo />
         <Text style={styles.title}> {assessment}</Text>
@@ -81,18 +90,11 @@ const StatusResult = () => {
         </View>
       </View>
       <ExitButton />
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "#F6F1F0",
-  },
-
   top: {
     flex: 0.7,
     textAlign: "center",

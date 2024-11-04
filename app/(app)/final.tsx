@@ -1,10 +1,11 @@
 import ConfirmButton from "@/components/ConfirmButton";
 import Logo from "@/components/Logo";
+import GlobalStyles from "@/styles/globalStyles";
 import { StyleSheet, Text, View } from "react-native";
 
 const RegistrationFinal = () => {
   return (
-    <View style={styles.container}>
+    <View style={GlobalStyles.container}>
       <Logo />
       <View style={styles.wrapper}>
         <Text style={styles.alertInfo}>
@@ -17,13 +18,6 @@ const RegistrationFinal = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "#F6F1F0",
-    fontFamily: "Manrope",
-  },
   wrapper: {
     flex: 1,
     alignItems: "center",

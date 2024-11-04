@@ -1,6 +1,7 @@
 // Forum.js
 import ConfirmButton from "@/components/ConfirmButton";
 import Header from "@/components/Header";
+import GlobalStyles from "@/styles/globalStyles";
 import { router } from "expo-router";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
@@ -55,7 +56,7 @@ const Community = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={GlobalStyles.container}>
       <Header text="Community" />
       <ConfirmButton text="Add Thread" onPress={() => router.push("/submit")} />
       <View style={{ marginTop: 20 }}>
@@ -78,12 +79,6 @@ const Community = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "#F6F1F0",
-  },
   threadContainer: {
     marginBottom: 15,
     padding: 10,

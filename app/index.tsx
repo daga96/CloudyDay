@@ -1,7 +1,8 @@
-// app/Home.tsx
+import GlobalStyles from "@/styles/globalStyles";
 
 import ConfirmButton from "@/components/ConfirmButton";
 import Logo from "@/components/Logo";
+import { useSession } from "@/contexts/AuthContext";
 import axios from "axios";
 import * as Location from "expo-location";
 import { router } from "expo-router";
@@ -16,41 +17,40 @@ import {
   View,
 } from "react-native";
 
+interface WeatherData {
+  location: { name: string };
+  current: { temp_c: number; condition: { text: string } };
+  forecast: { forecastday: { hour: any[] } };
+}
+
+interface WeatherIcons {
+  [key: string]: any;
+}
+
 const Home = () => {
-  const [city, setCity] = useState<string>("Seoul");
-  const [weather, setWeather] = useState(null);
-  const [forecast, setForecast] = useState(null);
+  const [city, setCity] = useState<string>("");
+  const [weather, setWeather] = useState<any>(null);
+  const [forecast, setForecast] = useState<any[]>([]);
+  const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [lastClickTime, setLastClickTime] = useState<number>(0);
   const [clickCount, setClickCount] = useState<number>(0);
-  const [lastClickTime, setLastClickTime] = useState<Date | null>(null);
+  const [formattedDate, setFormattedDate] = useState<string>("");
+  const { signOut } = useSession();
+
+  const currentTime = new Date();
+  const currentHour = currentTime.getHours();
+  const endHour = currentHour + 8;
+
   const apiUrl = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
-  const currentDate = new Date();
 
-  const options: Intl.DateTimeFormatOptions = {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  };
-
-  const formattedDate = currentDate.toLocaleDateString("en-US", options);
-
-  const weatherIcons = {
+  const weatherIcons: WeatherIcons = {
     sunny: require("../assets/images/weather/sunny.png"),
     cloudy: require("../assets/images/weather/cloudy.png"),
     rainy: require("../assets/images/weather/rainy.png"),
     snowy: require("../assets/images/weather/snowy.png"),
-    "partialy cloudy": require("../assets/images/weather/partialycloudy.png"),
+    partlycloudy: require("../assets/images/weather/partlycloudy.png"),
   };
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (lastClickTime && Date.now() - lastClickTime > 1000) {
-        setClickCount(0);
-      }
-    }, 1000);
-    return () => clearTimeout(timeoutId);
-  }, [lastClickTime]);
 
   useEffect(() => {
     fetchWeatherAndForecast();
@@ -61,16 +61,28 @@ const Home = () => {
   };
 
   const getCurrentLocation = async () => {
-    let currentLocation = await Location.getCurrentPositionAsync({});
-    return currentLocation.coords;
+    const { coords } = await Location.getCurrentPositionAsync({});
+    return coords;
+  };
+
+  const getCurrentTime = () => {
+    const date = new Date();
+    const options: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    };
+    const formattedDate: string = date.toLocaleDateString("en-US", options);
+    setFormattedDate(formattedDate);
   };
 
   const getHourFromDate = (date: Date) => {
-    const hours = new Date(date).getHours();
+    const hours = date.getHours();
     const period = hours >= 12 ? "PM" : "AM";
-    const formattedHour = hours % 12 || 12; // convert to 12-hour format
+    const formattedHour = hours % 12 || 12;
     return `${formattedHour} ${period}`;
   };
+
   const fetchWeatherAndForecast = async () => {
     const { latitude, longitude } = await getCurrentLocation();
     const url = `http://api.weatherapi.com/v1/forecast.json?key=${apiUrl}&q=${latitude},${longitude}`;
@@ -80,6 +92,7 @@ const Home = () => {
       setCity(response.data.location.name);
       setWeather(response.data.current);
       setForecast(response.data.forecast.forecastday[0].hour);
+      getCurrentTime();
     } catch (error) {
       setError(error.message);
     } finally {
@@ -87,74 +100,103 @@ const Home = () => {
     }
   };
 
+  const filteredForecast = forecast?.filter((hour) => {
+    const forecastHour = new Date(hour.time).getHours();
+    return forecastHour >= currentHour && forecastHour < endHour;
+  });
+
   return (
-    <View style={styles.container}>
+    <View style={GlobalStyles.container}>
       <Logo />
+      <Text onPress={() => signOut()}> Logout</Text>
 
-      {/* Weather Info Container */}
-      <View style={styles.weatherContainer}>
-        <Text style={styles.weatherDate}>{formattedDate}</Text>
-        <Text style={styles.weatherCity}>{city}</Text>
-        <View style={styles.weatherDetails}>
-          <View style={styles.weatherInfo}>
-            <Text style={styles.weatherTemperature}>{weather?.temp_c}°</Text>
-            <Text style={styles.weatherDescription}>
-              {weather?.condition.text}
-            </Text>
-          </View>
-          <View>
-            <TouchableOpacity
-              onPress={() => {
-                const now = Date.now();
-                setLastClickTime(now);
+      {city ? (
+        <View style={GlobalStyles.container}>
+          <View style={styles.weatherContainer}>
+            <Text style={styles.weatherDate}>{formattedDate}</Text>
+            <Text style={styles.weatherCity}>{city}</Text>
+            <View style={styles.weatherDetails}>
+              <View style={styles.weatherInfo}>
+                <Text style={styles.weatherTemperature}>
+                  {weather?.temp_c}°
+                </Text>
+                <Text style={styles.weatherDescription}>
+                  {weather?.condition.text}
+                </Text>
+              </View>
+              <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    const now = Date.now();
+                    setLastClickTime(now);
 
-                if (clickCount === 2) {
-                  handleLoginNavigation();
-                  setClickCount(0);
-                } else {
-                  setClickCount(clickCount + 1);
-                }
-              }}
-              activeOpacity={0.7}
-            >
-              <Image
-                source={weatherIcons[weather?.condition.text.toLowerCase()]}
-                style={{ width: 100, height: 100 }}
-              />
-            </TouchableOpacity>
+                    if (clickCount === 2) {
+                      handleLoginNavigation();
+                      setClickCount(0);
+                    } else {
+                      setClickCount(clickCount + 1);
+                    }
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <Image
+                    source={
+                      weatherIcons[
+                        weather?.condition.text.toLowerCase().replace(/\s/g, "")
+                      ]
+                    }
+                    style={styles.weatherIcon}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
+          <Text style={GlobalStyles.subtitle}> Hourly Forecast </Text>
+          <ScrollView contentContainerStyle={styles.forecastContainer}>
+            {filteredForecast?.map((hour) => (
+              <View style={styles.forecastInfo} key={hour.time}>
+                <Text style={styles.forecastHour}>
+                  {getHourFromDate(new Date(hour.time))}
+                </Text>
+                <Text style={styles.forecastTemperature}>{hour.temp_c}°</Text>
+              </View>
+            ))}
+          </ScrollView>
         </View>
-      </View>
+      ) : (
+        <View style={styles.notAvailableContainer}>
+          <Text style={styles.notAvailableText}> Location not available </Text>
+          <TouchableOpacity
+            onPress={() => {
+              const now = Date.now();
+              setLastClickTime(now);
 
-      <ScrollView
-        horizontal={true}
-        contentContainerStyle={styles.weatherHourly}
-      >
-        {forecast?.map((hour, index) => (
-          <View key={index} style={styles.hour}>
-            <Text>{getHourFromDate(hour.time)}</Text>
-            <Text>{hour.temp_c}°</Text>
-            <Text>{hour.condition.text}</Text>
-          </View>
-        ))}
-      </ScrollView>
-      {/* Button */}
-      <ConfirmButton text="Report Unusual Weather" />
+              if (clickCount === 2) {
+                handleLoginNavigation();
+                setClickCount(0);
+              } else {
+                setClickCount(clickCount + 1);
+              }
+            }}
+            activeOpacity={0.7}
+          >
+            <Image
+              style={styles.locationIcon}
+              source={require("../assets/images/location.png")}
+            />
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <ConfirmButton text="Report Unusual Weather" onPress={() => {}} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "#F6F1F0",
-  },
-
   weatherContainer: {
     width: "90%",
-    padding: 10,
+    padding: 8,
     backgroundColor: "#ECD8C5",
     borderRadius: 25,
     elevation: 5,
@@ -195,7 +237,7 @@ const styles = StyleSheet.create({
     color: "#382215",
   },
   weatherDescription: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "regular",
     fontFamily: "Manrope_400Regular",
     color: "#382215",
@@ -203,26 +245,58 @@ const styles = StyleSheet.create({
   iconContainer: {
     marginTop: 10,
   },
+
   weatherIcon: {
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 100,
+    resizeMode: "contain",
   },
 
-  weatherHourly: {
+  forecastContainer: {
     width: Dimensions.get("window").width * 0.9,
-    height: 100,
     overflow: "scroll",
     backgroundColor: "#ECD8C5",
     borderRadius: 25,
     marginHorizontal: 24,
-    padding: 10,
+    padding: 16,
+    flexDirection: "row",
   },
 
-  hour: {
+  forecastInfo: {
     marginRight: 16,
     marginBottom: 8,
+  },
+
+  forecastHour: {
+    fontFamily: "Manrope_700Bold",
+    color: "#382215",
+    fontSize: 16,
+  },
+
+  forecastTemperature: {
     fontFamily: "Manrope_400Regular",
     color: "#382215",
+    fontSize: 16,
+  },
+
+  notAvailableContainer: {
+    width: "90%",
+    height: 200,
+    backgroundColor: "#ECD8C5",
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  notAvailableText: {
+    fontFamily: "Manrope_700Bold",
+    fontSize: 16,
+    color: "#382215",
+  },
+
+  locationIcon: {
+    width: 100,
+    height: 100,
   },
 });
 

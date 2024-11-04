@@ -2,10 +2,12 @@ import ConfirmButton from "@/components/ConfirmButton";
 import ExitButton from "@/components/ExitButton";
 import Header from "@/components/Header";
 import { useStatus } from "@/contexts/StatusContext";
+import GlobalStyles from "@/styles/globalStyles";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { router } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+
 const API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 
 const DetailedAssessmentScreen = () => {
@@ -41,7 +43,7 @@ const DetailedAssessmentScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={GlobalStyles.container}>
       <Header text="Assess Danger" />
       <Text style={styles.description}>
         Freely write down anything that's happening!
@@ -59,13 +61,6 @@ const DetailedAssessmentScreen = () => {
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "#F6F1F0",
-    fontFamily: "Manrope",
-  },
   description: {
     textAlign: "center",
     color: "#382215",

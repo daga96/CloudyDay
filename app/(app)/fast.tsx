@@ -7,6 +7,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { router } from "expo-router";
 import { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+
 const API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 
 const FastAssessment = () => {

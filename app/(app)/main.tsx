@@ -2,6 +2,7 @@ import ExitButton from "@/components/ExitButton";
 import Header from "@/components/Header";
 import MenuButton from "@/components/MenuButton";
 import { useSession } from "@/contexts/AuthContext";
+import GlobalStyles from "@/styles/globalStyles";
 import { router } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -11,7 +12,7 @@ const Main = () => {
   const { session } = useSession();
 
   return (
-    <View style={styles.container}>
+    <View style={GlobalStyles.container}>
       <Header text={`Hi! ${session?.replace(/"/g, "")}`} />
 
       <View>
@@ -32,13 +33,6 @@ const Main = () => {
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "#F6F1F0",
-    fontFamily: "Manrope",
-  },
   title: {
     fontSize: 24,
     fontFamily: "Manrope_700Bold",

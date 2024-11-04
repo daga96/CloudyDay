@@ -1,14 +1,16 @@
 import { app } from "@/firebaseConfig";
 import { useStorageState } from "@/hooks/useStorageState";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { createContext, useContext, type PropsWithChildren } from "react";
 
 const AuthContext = createContext<{
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<Boolean>;
+  signOut: () => Promise<void>;
   session?: string | null;
   isLoading: boolean;
 }>({
-  signIn: async () => {},
+  signIn: async () => false,
+  signOut: async () => {},
   session: null,
   isLoading: false,
 });
@@ -36,8 +38,18 @@ export function SessionProvider({ children }: PropsWithChildren) {
             const user = userCredential.user;
 
             setSession(JSON.stringify(user.email));
+            return true;
           } catch (error) {
             console.error("Error signing in:", error);
+            return false;
+          }
+        },
+        signOut: async () => {
+          try {
+            await signOut(auth);
+            setSession(null);
+          } catch (error) {
+            console.error("Error signing out:", error);
           }
         },
         session,

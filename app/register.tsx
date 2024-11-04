@@ -1,3 +1,4 @@
+import GlobalStyles from "@/styles/globalStyles";
 import { router } from "expo-router";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useState } from "react";
@@ -40,7 +41,7 @@ const Register = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={GlobalStyles.container}>
       <Logo />
       <View style={styles.form}>
         <Text style={styles.label}>Email</Text>
@@ -67,13 +68,6 @@ const Register = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "#F6F1F0",
-  },
-
   form: {
     paddingHorizontal: 20,
     flexDirection: "column",

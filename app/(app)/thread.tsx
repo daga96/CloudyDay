@@ -1,5 +1,6 @@
 // ThreadDetail.js
 import Header from "@/components/Header";
+import GlobalStyles from "@/styles/globalStyles";
 import { useLocalSearchParams } from "expo-router";
 import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
@@ -46,7 +47,7 @@ const ThreadDetail = () => {
   if (!thread) return <Text>Loading...</Text>;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={GlobalStyles.container}>
       <Header text="Thread" />
       <View style={styles.threadContent}>
         <Text style={styles.title}>{thread.title}</Text>
@@ -80,12 +81,6 @@ const ThreadDetail = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "#F6F1F0",
-  },
   threadContent: {
     width: "90%",
     backgroundColor: "#ECD8C5",

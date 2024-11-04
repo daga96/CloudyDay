@@ -1,6 +1,7 @@
 // CreateThread.js
 import ConfirmButton from "@/components/ConfirmButton";
 import Logo from "@/components/Logo";
+import GlobalStyles from "@/styles/globalStyles";
 import { router } from "expo-router";
 import { addDoc, collection, getFirestore } from "firebase/firestore";
 import React, { useState } from "react";
@@ -34,7 +35,7 @@ const SubmitThread = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={GlobalStyles.container}>
       <Logo />
       <TextInput
         editable
@@ -57,12 +58,6 @@ const SubmitThread = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    backgroundColor: "#F6F1F0",
-  },
   textInput: {
     width: "90%",
     backgroundColor: "#ECD8C5",
