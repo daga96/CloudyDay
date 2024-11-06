@@ -33,7 +33,7 @@ const Login = () => {
   return (
     <View style={GlobalStyles.container}>
       <Logo />
-      <View style={styles.form}>
+      <View>
         <Text style={styles.label}>Email</Text>
         <TextInput
           style={[styles.textInput, { marginBottom: 16 }]}

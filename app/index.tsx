@@ -17,12 +17,6 @@ import {
   View,
 } from "react-native";
 
-interface WeatherData {
-  location: { name: string };
-  current: { temp_c: number; condition: { text: string } };
-  forecast: { forecastday: { hour: any[] } };
-}
-
 interface WeatherIcons {
   [key: string]: any;
 }

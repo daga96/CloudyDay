@@ -45,7 +45,6 @@ const AssessDanger = () => {
     const documentRef = doc(assessmentRef, documentId);
 
     try {
-      // Fetch the document
       const docSnap = await getDoc(documentRef);
       if (docSnap.exists()) {
         // If the document exists, set the fetched assessments
@@ -59,7 +58,7 @@ const AssessDanger = () => {
     }
   };
 
-  const formatDate = (date) => {
+  const formatDate = (date: String) => {
     return date.split("T")[0];
   };
   const AssessmentList = () => {
