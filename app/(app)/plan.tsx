@@ -77,8 +77,7 @@ const steps = [
 const SafePlan = () => {
   const [currentStep, setCurrentStep] = useState<number>(-1);
   const [currentPlan, setCurrentPlan] = useState<Object | null>(null);
-  const [informationNotice, setInformationNotice] = useState<string>("");
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState<Object | null>({});
   const { session } = useSession();
   const db = getFirestore(app);
 
