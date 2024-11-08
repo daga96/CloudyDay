@@ -2,7 +2,6 @@ import ExitButton from "@/components/ExitButton";
 import Logo from "@/components/Logo";
 import { useSession } from "@/contexts/AuthContext";
 import { useStatus } from "@/contexts/StatusContext";
-import GlobalStyles from "@/styles/globalStyles";
 import { router } from "expo-router";
 import { collection, doc, getFirestore, setDoc } from "firebase/firestore";
 import {
@@ -63,7 +62,7 @@ const StatusResult = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={GlobalStyles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <ImageBackground source={getImageSource()} style={styles.top}>
         <Logo />
         <Text style={styles.title}> {assessment}</Text>
@@ -95,6 +94,10 @@ const StatusResult = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
   top: {
     flex: 0.7,
     textAlign: "center",

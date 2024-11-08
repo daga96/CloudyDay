@@ -57,8 +57,10 @@ const Register = () => {
           environment. We understand that privacy is crucial, especially in
           sensitive situations. Your information will be stored securely and
           will not be shared with third parties without your consent, except as
-          required by law. <br />
-          <b>For your safety we won’t sent you any emails.</b>
+          required by law.
+        </Text>
+        <Text style={styles.privacyEmail}>
+          For your safety we won’t sent you any emails.
         </Text>
       </View>
 
@@ -91,6 +93,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginVertical: 20,
     fontFamily: "Manrope_400Regular",
+    fontSize: 12,
+    color: "#382215",
+  },
+
+  privacyEmail: {
+    textAlign: "center",
+    marginHorizontal: 20,
+    marginVertical: 20,
+    fontFamily: "Manrope_700Bold",
     fontSize: 12,
     color: "#382215",
   },

@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     textAlign: "center",
     width: 250,
+    marginBottom: 16,
   },
 });
 

@@ -1,10 +1,10 @@
-import GlobalStyles from "@/styles/globalStyles";
-
 import ConfirmButton from "@/components/ConfirmButton";
 import Logo from "@/components/Logo";
-import { useSession } from "@/contexts/AuthContext";
+import GlobalStyles from "@/styles/globalStyles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import * as Location from "expo-location";
+import * as MailComposer from "expo-mail-composer";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -21,20 +21,31 @@ interface WeatherIcons {
   [key: string]: any;
 }
 
-const Home = () => {
+interface WeatherData {
+  temp_c: number;
+  condition: {
+    text: string;
+  };
+}
+
+interface HourlyForecast {
+  time: string;
+  temp_c: number;
+}
+
+const Home: React.FC = () => {
   const [city, setCity] = useState<string>("");
-  const [weather, setWeather] = useState<any>(null);
-  const [forecast, setForecast] = useState<any[]>([]);
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [forecast, setForecast] = useState<HourlyForecast[]>([]);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [lastClickTime, setLastClickTime] = useState<number>(0);
   const [clickCount, setClickCount] = useState<number>(0);
   const [formattedDate, setFormattedDate] = useState<string>("");
-  const { signOut } = useSession();
 
   const currentTime = new Date();
   const currentHour = currentTime.getHours();
-  const endHour = currentHour + 8;
+  const endHour = currentHour + 12;
 
   const apiUrl = process.env.EXPO_PUBLIC_WEATHER_API_KEY;
 
@@ -54,7 +65,9 @@ const Home = () => {
     router.push("./login");
   };
 
-  const getCurrentLocation = async () => {
+  const getCurrentLocation = async (): Promise<
+    Location.LocationObject["coords"]
+  > => {
     const { coords } = await Location.getCurrentPositionAsync({});
     return coords;
   };
@@ -70,25 +83,25 @@ const Home = () => {
     setFormattedDate(formattedDate);
   };
 
-  const getHourFromDate = (date: Date) => {
+  const getHourFromDate = (date: Date): string => {
     const hours = date.getHours();
     const period = hours >= 12 ? "PM" : "AM";
     const formattedHour = hours % 12 || 12;
     return `${formattedHour} ${period}`;
   };
 
-  const fetchWeatherAndForecast = async () => {
-    const { latitude, longitude } = await getCurrentLocation();
-    const url = `http://api.weatherapi.com/v1/forecast.json?key=${apiUrl}&q=${latitude},${longitude}`;
-
+  const fetchWeatherAndForecast = async (): Promise<void> => {
     try {
+      const { latitude, longitude } = await getCurrentLocation();
+      const url = `http://api.weatherapi.com/v1/forecast.json?key=${apiUrl}&q=${latitude},${longitude}`;
+
       const response = await axios.get(url);
       setCity(response.data.location.name);
       setWeather(response.data.current);
       setForecast(response.data.forecast.forecastday[0].hour);
       getCurrentTime();
     } catch (error) {
-      setError(error.message);
+      setError((error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -99,10 +112,31 @@ const Home = () => {
     return forecastHour >= currentHour && forecastHour < endHour;
   });
 
+  const reportIncident = async (): Promise<void> => {
+    const savedEmail = await AsyncStorage.getItem("email");
+
+    if (savedEmail) {
+      const location = await Location.getCurrentPositionAsync();
+      const message =
+        "Incident occurred in " +
+        city +
+        " at " +
+        location.coords.latitude +
+        ", " +
+        location.coords.longitude;
+      await MailComposer.composeAsync({
+        recipients: [savedEmail],
+        subject: "Unusual Weather Report",
+        body: message,
+      });
+    } else {
+      router.push("./report");
+    }
+  };
+
   return (
     <View style={GlobalStyles.container}>
       <Logo />
-      <Text onPress={() => signOut()}> Logout</Text>
 
       {city ? (
         <View style={GlobalStyles.container}>
@@ -182,14 +216,19 @@ const Home = () => {
         </View>
       )}
 
-      <ConfirmButton text="Report Unusual Weather" onPress={() => {}} />
+      <ConfirmButton
+        text="Report Unusual Weather"
+        onPress={() => {
+          reportIncident();
+        }}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   weatherContainer: {
-    width: "90%",
+    width: Dimensions.get("window").width * 0.9,
     padding: 8,
     backgroundColor: "#ECD8C5",
     borderRadius: 25,
@@ -270,27 +309,26 @@ const styles = StyleSheet.create({
   forecastTemperature: {
     fontFamily: "Manrope_400Regular",
     color: "#382215",
-    fontSize: 16,
+    fontSize: 18,
   },
-
   notAvailableContainer: {
-    width: "90%",
-    height: 200,
-    backgroundColor: "#ECD8C5",
-    borderRadius: 25,
-    alignItems: "center",
+    flexDirection: "column",
     justifyContent: "center",
+    alignItems: "center",
+    marginTop: 48,
+    paddingHorizontal: 24,
   },
-
   notAvailableText: {
-    fontFamily: "Manrope_700Bold",
-    fontSize: 16,
+    fontSize: 24,
+    fontWeight: "regular",
+    fontFamily: "Manrope_400Regular",
     color: "#382215",
+    marginBottom: 16,
   },
-
   locationIcon: {
-    width: 100,
-    height: 100,
+    width: 48,
+    height: 48,
+    resizeMode: "contain",
   },
 });
 

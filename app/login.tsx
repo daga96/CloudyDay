@@ -48,7 +48,7 @@ const Login = () => {
       <Text style={styles.codeInfo}>
         Don’t have the code? <Link href="/register">Register Here</Link>
       </Text>
-      <Text style={GlobalStyles.errorText}>{error}</Text>
+      <Text style={error && GlobalStyles.errorText}>{error}</Text>
       <ConfirmButton text="Confirm" onPress={handleLoginUser} />
     </View>
   );

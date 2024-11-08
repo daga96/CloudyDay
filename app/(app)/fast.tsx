@@ -42,7 +42,7 @@ const FastAssessment = () => {
 
   async function Gemini() {
     const query =
-      "Evaluate the level of danger described tags chosen by a domestic violence victim and categorize it as one of the following: Safe, Caution, Danger, or Immediate Danger. Begin the response with the appropriate category, followed by an asterisk (*). After the asterisk, kindly explain why the situation falls under that category, using empathetic language." +
+      "Evaluate the level of danger described by the tags chosen by a domestic violence victim. Consider various factors such as severity, frequency, physical or emotional harm, and any immediate threats. Based on these factors, categorize the situation as one of the following: Safe, Caution, Danger, or Immediate Danger. Start your response with the appropriate category, followed by an asterisk (*). After the asterisk, provide a thoughtful and empathetic explanation of why the situation falls under that category, taking into account the specific details described in the victim’s tags. Kindly explain why the situation falls under that category, using empathetic language that reflects the victim’s emotions and situation." +
       JSON.stringify(tags);
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-002" });

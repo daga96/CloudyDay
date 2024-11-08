@@ -11,7 +11,13 @@ import {
   setDoc,
 } from "firebase/firestore";
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { app } from "../../firebaseConfig";
 
 const steps = [
@@ -71,18 +77,20 @@ const steps = [
 const SafePlan = () => {
   const [currentStep, setCurrentStep] = useState<number>(-1);
   const [currentPlan, setCurrentPlan] = useState<Object | null>(null);
-
+  const [informationNotice, setInformationNotice] = useState<string>("");
   const [answers, setAnswers] = useState({});
-  const lastStep = currentStep < steps.length - 1;
   const { session } = useSession();
   const db = getFirestore(app);
+
+  const lastStep = currentStep < steps.length - 1;
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     }
   };
-  const handleAnswer = (answer) => {
+
+  const handleAnswer = (answer: string) => {
     const currentAnswers = answers[currentStep] || [];
     const newAnswers = currentAnswers.includes(answer)
       ? currentAnswers.filter((a) => a !== answer)
@@ -101,7 +109,7 @@ const SafePlan = () => {
 
     const planRef = collection(db, "plans");
     try {
-      await setDoc(doc(planRef, session?.replace('"', "")), answers);
+      await setDoc(doc(planRef, session.replace('"', "")), answers);
     } catch (error) {
       console.error("Error saving plan to Firebase:", error);
     }
@@ -113,12 +121,11 @@ const SafePlan = () => {
       return;
     }
 
-    const planRef = doc(db, "plans", session?.replace('"', ""));
+    const planRef = doc(db, "plans", session.replace('"', ""));
     try {
       const planDoc = await getDoc(planRef);
       if (planDoc.exists()) {
         const plan = planDoc.data();
-
         setCurrentPlan(plan);
         setCurrentStep(steps.length);
       } else {
@@ -135,27 +142,28 @@ const SafePlan = () => {
   };
 
   return (
-    <View style={GlobalStyles.container}>
+    <ScrollView contentContainerStyle={GlobalStyles.container}>
       <Header text="Create Safe Plan" />
       {currentStep === -1 ? (
         <View style={styles.buttons}>
-          <ConfirmButton text={"Start"} onPress={handleStart} />
-          <br />
-          <ConfirmButton text={"Current Plan"} onPress={getCurrentPlan} />
+          <ConfirmButton text="Start" onPress={handleStart} />
+          <ConfirmButton text="Current Plan" onPress={getCurrentPlan} />
         </View>
       ) : currentStep === steps.length ? (
-        <View>
-          {currentPlan ? (
+        <View style={styles.planContainer}>
+          {currentPlan && (
             <View>
-              <Text style={styles.title}>Your Current Plan:</Text>
+              <Text style={styles.title}>Your Current Plan</Text>
               {Object.keys(currentPlan).map((key, index) => (
-                <View key={index}>
-                  <Text style={styles.title}>{steps[key].title}</Text>
-                  <Text>{currentPlan[key].join(", ")}</Text>
+                <View key={index} style={styles.planItem}>
+                  <Text style={styles.stepTitle}>{steps[key].title}</Text>
+                  <Text style={styles.planText}>
+                    {currentPlan[key].join(", ")}
+                  </Text>
                 </View>
               ))}
             </View>
-          ) : null}
+          )}
         </View>
       ) : (
         <View style={styles.text}>
@@ -167,6 +175,7 @@ const SafePlan = () => {
               text={answer}
               isSelected={answers[currentStep]?.includes(answer)}
               onPress={() => handleAnswer(answer)}
+              style={styles.tag}
             />
           ))}
           <TouchableOpacity onPress={lastStep ? handleNext : saveToFirebase}>
@@ -174,37 +183,62 @@ const SafePlan = () => {
           </TouchableOpacity>
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
+
 const styles = StyleSheet.create({
   text: {
-    textAlign: "left",
     marginHorizontal: 20,
     color: "#382215",
+    marginBottom: 20,
   },
   message: {
     color: "#382215",
+    marginVertical: 10,
   },
   title: {
-    fontSize: 20,
-    fontWeight: 500,
+    fontSize: 22,
+    fontWeight: "600",
+    color: "#382215",
+    marginBottom: 10,
+  },
+  stepTitle: {
+    fontSize: 18,
+    fontWeight: "500",
+    color: "#382215",
+  },
+  planText: {
+    fontSize: 16,
+    color: "#382215",
+    marginBottom: 10,
+  },
+  planContainer: {
+    marginHorizontal: 20,
+  },
+  planItem: {
+    marginBottom: 15,
   },
   buttons: {
     flex: 1,
     flexDirection: "column",
     justifyContent: "center",
-    alignContent: "center",
+    alignItems: "center",
   },
   button: {
-    alignSelf: "flex-end",
+    alignSelf: "center",
     backgroundColor: "#382215",
     color: "#FFFFFF",
     borderRadius: 50,
-    marginHorizontal: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 2,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     textAlign: "center",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  tag: {
+    marginVertical: 5,
   },
 });
+
 export default SafePlan;

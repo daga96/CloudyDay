@@ -9,9 +9,8 @@ import { Alert, StyleSheet, TextInput, View } from "react-native";
 import { app } from "../../firebaseConfig";
 
 const SubmitThread = () => {
-  const [threadTitle, setThreadTitle] = useState<string>(""); // State for thread title
-  const [threadContent, setThreadContent] = useState<string>(""); // State for thread content
-
+  const [threadTitle, setThreadTitle] = useState<string>("");
+  const [threadContent, setThreadContent] = useState<string>("");
   const addThread = async () => {
     if (!threadTitle || !threadContent) {
       Alert.alert("Please enter both a title and content");
@@ -47,7 +46,7 @@ const SubmitThread = () => {
       <TextInput
         editable
         multiline
-        style={[styles.textInput, styles.contentInput]} // Add a specific style for content input if needed
+        style={[styles.textInput, styles.contentInput]}
         placeholder="Create a new thread"
         value={threadContent}
         onChangeText={setThreadContent}
@@ -63,7 +62,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ECD8C5",
     borderRadius: 15,
     padding: 20,
-    marginBottom: 10, // Add margin for spacing between title and content
+    marginBottom: 10,
   },
   contentInput: {
     minHeight: 300,
