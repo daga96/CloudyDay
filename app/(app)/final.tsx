@@ -1,6 +1,7 @@
 import ConfirmButton from "@/components/ConfirmButton";
 import Logo from "@/components/Logo";
 import GlobalStyles from "@/styles/globalStyles";
+import { router } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 
 const RegistrationFinal = () => {
@@ -9,9 +10,14 @@ const RegistrationFinal = () => {
       <Logo />
       <View style={styles.wrapper}>
         <Text style={styles.alertInfo}>
-          Your account <br /> was successfully created!
+          Your account was successfully created!
         </Text>
-        <ConfirmButton text="Home" />
+        <ConfirmButton
+          text="Home"
+          onPress={() => {
+            router.push("/main");
+          }}
+        />
       </View>
     </View>
   );

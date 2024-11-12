@@ -1,4 +1,4 @@
-// ThreadDetail.js
+// ThreadDetail.tsx
 import Header from "@/components/Header";
 import GlobalStyles from "@/styles/globalStyles";
 import { useLocalSearchParams } from "expo-router";
@@ -14,11 +14,18 @@ import {
 } from "react-native";
 import { app } from "../../firebaseConfig";
 
-const ThreadDetail = () => {
-  const [thread, setThread] = useState<Object | null>(null);
+interface Thread {
+  id: string;
+  title: string;
+  content: string;
+  replies?: string[];
+}
+
+const ThreadDetail: React.FC = () => {
+  const [thread, setThread] = useState<Thread | null>(null);
   const [newComment, setNewComment] = useState<string>("");
   const db = getFirestore(app);
-  const { q } = useLocalSearchParams();
+  const { q } = useLocalSearchParams<{ q: string }>();
 
   useEffect(() => {
     const fetchThread = async () => {
@@ -26,7 +33,10 @@ const ThreadDetail = () => {
       const threadRef = doc(db, "threads", q);
       const threadSnapshot = await getDoc(threadRef);
       if (threadSnapshot.exists()) {
-        setThread({ id: threadSnapshot.id, ...threadSnapshot.data() });
+        setThread({
+          id: threadSnapshot.id,
+          ...threadSnapshot.data(),
+        } as Thread);
       } else {
         console.log("No such document!");
       }
@@ -36,11 +46,11 @@ const ThreadDetail = () => {
   }, [q]);
 
   const handleAddComment = async () => {
-    if (newComment.trim()) {
+    if (newComment.trim() && thread) {
       const updatedReplies = [...(thread.replies || []), newComment];
       await updateDoc(doc(db, "threads", q), { replies: updatedReplies });
       setNewComment("");
-      setThread((prev) => ({ ...prev, replies: updatedReplies })); // Update local state
+      setThread((prev) => (prev ? { ...prev, replies: updatedReplies } : null)); // Update local state
     }
   };
 
@@ -51,9 +61,9 @@ const ThreadDetail = () => {
       <Header text="Thread" />
       <View style={styles.threadContent}>
         <Text style={styles.title}>{thread.title}</Text>
-        <Text>{thread.content}</Text>{" "}
+        <Text>{thread.content}</Text>
         <Text style={styles.threadReplies}>
-          {thread.replies && thread.replies.length}
+          {thread.replies ? thread.replies.length : 0}
         </Text>
       </View>
       <TextInput
@@ -66,7 +76,7 @@ const ThreadDetail = () => {
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
       <View style={styles.commentsContainer}>
-        {thread.replies ? (
+        {thread.replies && thread.replies.length > 0 ? (
           thread.replies.map((reply, index) => (
             <Text key={index} style={styles.comment}>
               {reply}

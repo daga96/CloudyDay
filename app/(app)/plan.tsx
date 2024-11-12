@@ -109,6 +109,7 @@ const SafePlan = () => {
     const planRef = collection(db, "plans");
     try {
       await setDoc(doc(planRef, session.replace('"', "")), answers);
+      getCurrentPlan();
     } catch (error) {
       console.error("Error saving plan to Firebase:", error);
     }
